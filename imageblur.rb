@@ -1,33 +1,43 @@
 class Image
-
-  def initialize(array)
+  def initialize(array, distance)
     @matrix = array
-    results = []
+    @results = []
+    @distance = distance.to_i
+  end
 
+  def display
+    @matrix.each do |set|
+      p set
+    end
+  end
+
+  def findones
     @matrix.each_with_index do |row, y_index|
       row.each_with_index do |value, x_index|
         if value == 1
-          results.push([y_index, x_index])
+          @results.push([y_index, x_index])
         end
       end
     end
+  end
 
-    results.each do |coordinate|
-      y = coordinate[0]
-      x = coordinate[1]
+  def blur
+    @distance.times do
+      findones
 
-      #Top
-      @matrix[y-1][x] = 1 if y > 0
-      #Bottom
-      @matrix[y+1][x] = 1 if y < @matrix.length - 1
-      #Left
-      @matrix[y][x-1] = 1 if x > 0
-      #Right
-      @matrix[y][x+1] = 1 if x < @matrix[0].length - 1
-    end
+      @results.each do |coordinate|
+        y = coordinate[0]
+        x = coordinate[1]
 
-    @matrix.each do |set|
-      p set
+        #Top
+        @matrix[y-1][x] = 1 if y > 0
+        #Bottom
+        @matrix[y+1][x] = 1 if y < @matrix.length - 1
+        #Left
+        @matrix[y][x-1] = 1 if x > 0
+        #Right
+        @matrix[y][x+1] = 1 if x < @matrix[0].length - 1
+      end
     end
   end
 end
@@ -43,4 +53,7 @@ image = Image.new([
   [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-])
+], 2)
+
+image.blur
+image.display
